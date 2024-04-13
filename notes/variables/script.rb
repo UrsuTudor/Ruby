@@ -3,11 +3,26 @@
   # b = a => b = 4
   # a = 7 => b still = 4 because in ruby, redeclaring a still creates an object with a new id, an b was assigned to the old object id
 
-#GETTING DATA FROM USERS
+#INPUT AND OUTPUT
   # gets 
     # stands for 'get string'
     # waits for user to type information and press enter
     # gets.chomp will get rid of the newline character
+
+  # puts 
+    #writes the data and jumps to the next line
+    #tries to convert everything into a string with to_s
+
+  # putc - writes the first character of the data 
+
+  # p 
+    # writes a more 'raw' version of data than puts => p "Hello world" => "Hello world" as opposed to just Hello world without the ""
+    # returns the object it was called on as opposed to returning nill
+
+  # pp - prints big hashes and arrays in a nicer way 
+
+  # print - writes the data without jumping to the next line
+
   
 #VARIABLE SCOPE
   # methods (functions in JS language) can only access and modify variables declared internally 
