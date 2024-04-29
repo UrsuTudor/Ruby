@@ -88,6 +88,24 @@ def play_game
 
       working_row.place_player_choice(player_choice[1].to_i, 'o')
     end
+  
+    # handles 'x' wins
+    winner_declared = true if row1.display[0] == ' x ' && row1.display[2] == ' x ' && row1.display[4] == ' x '
+    winner_declared = true if row2.display[0] == ' x ' && row2.display[2] == ' x ' && row2.display[4] == ' x '
+    winner_declared = true if row3.display[0] == ' x ' && row3.display[2] == ' x ' && row3.display[4] == ' x '
+    winner_declared = true if row1.display[0] == ' x ' && row2.display[0] == ' x ' && row3.display[0] == ' x '
+    winner_declared = true if row1.display[4] == ' x ' && row2.display[4] == ' x ' && row3.display[4] == ' x '
+    winner_declared = true if row1.display[0] == ' x ' && row2.display[2] == ' x ' && row3.display[4] == ' x '
+    winner_declared = true if row1.display[4] == ' x ' && row2.display[2] == ' x ' && row3.display[0] == ' x '
+
+    # handles 'o' wins 
+    winner_declared = true if row1.display[0] == ' o ' && row1.display[2] == ' o ' && row1.display[4] == ' o '
+    winner_declared = true if row2.display[0] == ' o ' && row2.display[2] == ' o ' && row2.display[4] == ' o '
+    winner_declared = true if row3.display[0] == ' o ' && row3.display[2] == ' o ' && row3.display[4] == ' o '
+    winner_declared = true if row1.display[0] == ' o ' && row2.display[0] == ' o ' && row3.display[0] == ' o '
+    winner_declared = true if row1.display[4] == ' o ' && row2.display[4] == ' o ' && row3.display[4] == ' o '
+    winner_declared = true if row1.display[0] == ' o ' && row2.display[2] == ' o ' && row3.display[4] == ' o '
+    winner_declared = true if row1.display[4] == ' o ' && row2.display[2] == ' o ' && row3.display[0] == ' o '
 
     row1.display_row
     outline_row.display_row
