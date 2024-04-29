@@ -1,3 +1,5 @@
+require "pry-byebug"
+
 # frozen_string_literal: true
 
 # need to display an empty board
@@ -23,6 +25,18 @@ end
 
 # class of rows that can contain 'x' or 'o'
 class GameRow < Rows
+  def player_choice(index, choice)
+    # necessary because 1 and 3 are the indexes of the outline bars
+    index = 0 if index == 1
+    index = 4 if index == 3
+
+    if choice != 'x' && choice != 'o'
+      p "ERROR: your choice must be 'x' or 'o'"
+      return
+    end
+
+    self.display[index] = " #{choice} "
+  end
 end
 
 # class of outlines that cannot and should not be modified by the player
@@ -33,9 +47,3 @@ outline_row = OutlineRow.new(['---', '+', '---', '+', '---'])
 row1 = GameRow.new(['   ', '|', '   ', '|', '   '])
 row2 = GameRow.new(['   ', '|', '   ', '|', '   '])
 row3 = GameRow.new(['   ', '|', '   ', '|', '   '])
-
-row1.display_row
-outline_row.display_row
-row2.display_row
-outline_row.display_row
-row3.display_row
