@@ -107,6 +107,10 @@ def play_game
     winner_declared = true if row1.display[0] == ' o ' && row2.display[2] == ' o ' && row3.display[4] == ' o '
     winner_declared = true if row1.display[4] == ' o ' && row2.display[2] == ' o ' && row3.display[0] == ' o '
 
+    break puts 'This game is a draw!' if row1.display.none? { |e| e == '   ' } &&
+                                         row2.display.none? { |e| e == '   ' } &&
+                                         row3.display.none? { |e| e == '   ' }
+
     row1.display_row
     outline_row.display_row
     row2.display_row
