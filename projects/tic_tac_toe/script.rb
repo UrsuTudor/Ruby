@@ -2,12 +2,6 @@ require "pry-byebug"
 
 # frozen_string_literal: true
 
-# need to display an empty board
-# need player 1 for "x" and 2 for "o"
-# need player 1 and 2 to be able to change the board display
-# need plyer 1 and 2 to be able to track the changes they have made to the board
-# make player 1 and 2 win when certain conditions are met and reset the board
-
 # parent of all the rows in the game
 class Rows
   def initialize(array)
@@ -42,11 +36,16 @@ class GameRow < Rows
 
     self.display[index] = " #{choice} "
   end
+
+  def empty?(index)
+    self.display[index] == '   '
+  end
 end
 
 # class of outlines that cannot and should not be modified by the player
 class OutlineRow < Rows
 end
+
 
 def play_game
   winner_declared = false
@@ -58,37 +57,29 @@ def play_game
   row3 = GameRow.new(['   ', '|', '   ', '|', '   '])
 
   until winner_declared == true
+    # handles round messages and gets player input
     if round_counter.even?
-      puts "X, it's your turn! Choose a row and empty spot in which to place your mark!(row, spot)"
+      puts "X, it's your turn! Choose a row and empty spot in which to place your mark!(row,spot)"
       player_choice = gets.chomp.split(',')
-
-      working_row = row1 if player_choice[0] == '1'
-      working_row = row2 if player_choice[0] == '2'
-      working_row = row3 if player_choice[0] == '3'
-
-      # prevents replacement of symbols
-      next puts 'ERROR: choose an empty spot!' if player_choice[1] == '1' && working_row.display[0] != '   '
-      next puts 'ERROR: choose an empty spot!' if player_choice[1] == '2' && working_row.display[2] != '   '
-      next puts 'ERROR: choose an empty spot!' if player_choice[1] == '3' && working_row.display[4] != '   '
-
-      working_row.place_player_choice(player_choice[1].to_i, 'x')
     end
 
     if round_counter.odd?
-      puts "O, it's your turn! Choose a row and empty spot in which to place your mark!(row, spot)"
+      puts "O, it's your turn! Choose a row and empty spot in which to place your mark!(row,spot)"
       player_choice = gets.chomp.split(',')
-
-      working_row = row1 if player_choice[0] == '1'
-      working_row = row2 if player_choice[0] == '2'
-      working_row = row3 if player_choice[0] == '3'
-
-      next puts 'ERROR: choose an empty spot!' if player_choice[1] == '1' && working_row.display[0] != '   '
-      next puts 'ERROR: choose an empty spot!' if player_choice[1] == '2' && working_row.display[2] != '   '
-      next puts 'ERROR: choose an empty spot!' if player_choice[1] == '3' && working_row.display[4] != '   '
-
-      working_row.place_player_choice(player_choice[1].to_i, 'o')
     end
-  
+
+    # declaring the working row requires less lines to handle the error message
+    working_row = row1 if player_choice[0] == '1'
+    working_row = row2 if player_choice[0] == '2'
+    working_row = row3 if player_choice[0] == '3'
+
+    next puts 'ERROR: choose an empty spot!' if player_choice[1] == '1' && !working_row.empty?(0)
+    next puts 'ERROR: choose an empty spot!' if player_choice[1] == '2' && !working_row.empty?(2)
+    next puts 'ERROR: choose an empty spot!' if player_choice[1] == '3' && !working_row.empty?(4)
+
+    working_row.place_player_choice(player_choice[1].to_i, 'x') if round_counter.even?
+    working_row.place_player_choice(player_choice[1].to_i, 'o') if round_counter.odd?
+
     # handles 'x' wins
     winner_declared = true if row1.display[0] == ' x ' && row1.display[2] == ' x ' && row1.display[4] == ' x '
     winner_declared = true if row2.display[0] == ' x ' && row2.display[2] == ' x ' && row2.display[4] == ' x '
@@ -107,15 +98,15 @@ def play_game
     winner_declared = true if row1.display[0] == ' o ' && row2.display[2] == ' o ' && row3.display[4] == ' o '
     winner_declared = true if row1.display[4] == ' o ' && row2.display[2] == ' o ' && row3.display[0] == ' o '
 
-    break puts 'This game is a draw!' if row1.display.none? { |e| e == '   ' } &&
-                                         row2.display.none? { |e| e == '   ' } &&
-                                         row3.display.none? { |e| e == '   ' }
-
     row1.display_row
     outline_row.display_row
     row2.display_row
     outline_row.display_row
     row3.display_row
+
+    break puts 'This game is a draw!' if row1.display.none? { |e| e == '   ' } &&
+                                         row2.display.none? { |e| e == '   ' } &&
+                                         row3.display.none? { |e| e == '   ' }
 
     round_counter += 1
   end
