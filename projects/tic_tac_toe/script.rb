@@ -40,6 +40,10 @@ class GameRow < Rows
   def empty?(index)
     self.display[index] == '   '
   end
+
+  def none_empty?
+    self.display.none? {|square| square == '   '}
+  end
 end
 
 # class of outlines that cannot and should not be modified by the player
@@ -104,9 +108,9 @@ def play_game
     outline_row.display_row
     row3.display_row
 
-    break puts 'This game is a draw!' if row1.display.none? { |e| e == '   ' } &&
-                                         row2.display.none? { |e| e == '   ' } &&
-                                         row3.display.none? { |e| e == '   ' }
+    break puts 'This game is a draw!' if row1.none_empty? &&
+                                         row2.none_empty? &&
+                                         row3.none_empty?
 
     round_counter += 1
   end
