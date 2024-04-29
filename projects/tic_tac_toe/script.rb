@@ -12,8 +12,6 @@ class Rows
     puts display.join
   end
 
-  # private
-
   attr_reader :display
 end
 
@@ -42,14 +40,19 @@ class GameRow < Rows
   end
 
   def none_empty?
-    self.display.none? {|square| square == '   '}
+    self.display.none? { |square| square == '   ' }
+  end
+
+  def all_on_row?(symbol)
+    self.display[0] == symbol &&
+      self.display[2] == symbol &&
+      self.display[4] == symbol
   end
 end
 
 # class of outlines that cannot and should not be modified by the player
 class OutlineRow < Rows
 end
-
 
 def play_game
   winner_declared = false
@@ -85,19 +88,17 @@ def play_game
     working_row.place_player_choice(player_choice[1].to_i, 'o') if round_counter.odd?
 
     # handles 'x' wins
-    winner_declared = true if row1.display[0] == ' x ' && row1.display[2] == ' x ' && row1.display[4] == ' x '
-    winner_declared = true if row2.display[0] == ' x ' && row2.display[2] == ' x ' && row2.display[4] == ' x '
-    winner_declared = true if row3.display[0] == ' x ' && row3.display[2] == ' x ' && row3.display[4] == ' x '
+    winner_declared = true if row1.all_on_row?(' x ') || row2.all_on_row?(' x ') || row3.all_on_row?(' x ')
     winner_declared = true if row1.display[0] == ' x ' && row2.display[0] == ' x ' && row3.display[0] == ' x '
+    winner_declared = true if row1.display[2] == ' x ' && row2.display[2] == ' x ' && row3.display[2] == ' x '
     winner_declared = true if row1.display[4] == ' x ' && row2.display[4] == ' x ' && row3.display[4] == ' x '
     winner_declared = true if row1.display[0] == ' x ' && row2.display[2] == ' x ' && row3.display[4] == ' x '
     winner_declared = true if row1.display[4] == ' x ' && row2.display[2] == ' x ' && row3.display[0] == ' x '
 
-    # handles 'o' wins 
-    winner_declared = true if row1.display[0] == ' o ' && row1.display[2] == ' o ' && row1.display[4] == ' o '
-    winner_declared = true if row2.display[0] == ' o ' && row2.display[2] == ' o ' && row2.display[4] == ' o '
-    winner_declared = true if row3.display[0] == ' o ' && row3.display[2] == ' o ' && row3.display[4] == ' o '
+    # handles 'o' wins
+    winner_declared = true if row1.all_on_row?(' o ') || row2.all_on_row?(' o ') || row3.all_on_row?(' o ')
     winner_declared = true if row1.display[0] == ' o ' && row2.display[0] == ' o ' && row3.display[0] == ' o '
+    winner_declared = true if row1.display[2] == ' o ' && row2.display[2] == ' o ' && row3.display[2] == ' o '
     winner_declared = true if row1.display[4] == ' o ' && row2.display[4] == ' o ' && row3.display[4] == ' o '
     winner_declared = true if row1.display[0] == ' o ' && row2.display[2] == ' o ' && row3.display[4] == ' o '
     winner_declared = true if row1.display[4] == ' o ' && row2.display[2] == ' o ' && row3.display[0] == ' o '
