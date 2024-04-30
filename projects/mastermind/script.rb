@@ -16,4 +16,26 @@ class Board
   end
 end
 
+class ComputerPlayer
+  def initialize
+    @colors = %w[red blue yellow green]
+  end
+  attr_reader :colors
 
+  def generate_code
+    code = []
+    4.times do
+      code.push(colors[rand(0..3)])
+    end
+
+    p code
+  end
+end
+
+board = Board.new
+
+board.display_game_board
+
+cp = ComputerPlayer.new
+
+cp.generate_code
