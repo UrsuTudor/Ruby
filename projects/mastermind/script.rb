@@ -21,13 +21,19 @@ end
 class ComputerPlayer
   def initialize
     @colors = %w[red blue yellow green]
+    @guess = []
   end
   attr_reader :colors
+  attr_accessor :guess
 
   def generate_code
     computer_code = []
     4.times { computer_code.push(colors[rand(0..3)]) }
     computer_code
+  end
+
+  def computer_guess
+    4.times { guess.push(colors[rand(0..3)]) }
   end
 end
 
@@ -91,8 +97,19 @@ class Game
 
   def compare_codes
     shuffled_messages = []
-    computer_code.each_with_index do |color, color_index|
-      player.guess.each do |guess|
+    code_to_guess = []
+    guesses = []
+    if gamemode == 1
+      code_to_guess = computer_code
+      guesses = player.guess
+    end
+    if gamemode == 2
+      code_to_guess = player.player_code
+      guesses = computer.guess
+    end
+
+    code_to_guess.each_with_index do |color, color_index|
+      guesses.each do |guess|
         # exact spot
         if guess == color && computer_code[color_index] == player.guess[color_index]
           shuffled_messages.push("#{guess.upcase} from column #{color_index + 1} is in the right spot!")
