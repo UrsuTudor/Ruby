@@ -53,39 +53,56 @@ class Game
     @player = HumanPlayer.new
     @winner = false
     @round_count = 0
+    @gamemode
   end
 
   def play
-    while winner == false
-      puts ' '
-      player.guess = player.player_guess
-      update_board
-      compare_codes
-      winner?
-      break if loss?
+    choose_gamemode
+    if gamemode == 1
+      while winner == false
+        puts ' '
+        player.guess = player.player_guess
+        update_board
+        compare_codes
+        winner?
+        break if loss?
+      end
+    elsif gamemode == 2
+      p 'input code'
     end
+  end
+
+  def choose_gamemode
+    puts "Choose gamemode: type 1 if you want to guess the computer's code or 2 if you want the computer to guess your code."
+    self.gamemode = gets.chomp.to_i
   end
 
   private
 
   attr_reader :board, :computer, :player, :computer_code
-  attr_accessor :player_guess, :winner, :round_count
+  attr_accessor :player_guess, :winner, :round_count, :gamemode
 
   def compare_codes
+    shuffled_messages = []
     computer_code.each_with_index do |color, color_index|
       player.guess.each do |guess|
         # exact spot
         if guess == color && computer_code[color_index] == player.guess[color_index]
-          p "#{guess.upcase} from column #{color_index + 1} is in the right spot!"
+          shuffled_messages.push("#{guess.upcase} from column #{color_index + 1} is in the right spot!")
           break
         end
 
         # right color, wrong spot
         if guess == color && computer_code[color_index] != player.guess[color_index]
-          p "There is one/one more instance of the color #{guess.upcase}, but in a different column!"
+          # p "There is one/one more instance of the color #{guess.upcase}, but in a different column!"
+          shuffled_messages.push("The color #{guess.upcase} is right, but there is one/one more of that color in a different spot!")
           break
         end
       end
+    end
+
+    shuffled_messages.shuffle.each do |message|
+      puts message
     end
   end
 
