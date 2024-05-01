@@ -34,14 +34,21 @@ end
 class HumanPlayer
   def initialize
     @guess
+    @player_code
   end
+
+  attr_accessor :guess, :player_code
 
   def player_guess
     puts 'Take a guess! The colors are: red, blue, yellow and green.'
     self.guess = gets.chomp.split
   end
 
-  attr_accessor :guess
+  def set_player_code
+    puts 'Set your code! The colors you can choose are: red, blue, yellow and green.'
+    self.player_code = gets.split
+    p player_code
+  end
 end
 
 class Game 
@@ -68,7 +75,7 @@ class Game
         break if loss?
       end
     elsif gamemode == 2
-      p 'input code'
+      player.set_player_code
     end
   end
 
