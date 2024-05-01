@@ -22,9 +22,10 @@ class ComputerPlayer
   def initialize
     @colors = %w[red blue yellow green]
     @guess = []
+    @guess_count = 0
   end
   attr_reader :colors
-  attr_accessor :guess
+  attr_accessor :guess, :guess_count
 
   def generate_code
     computer_code = []
@@ -32,8 +33,10 @@ class ComputerPlayer
     computer_code
   end
 
-  def computer_guess
-    4.times { guess.push(colors[rand(0..3)]) }
+  def set_computer_guess
+    4.times { guess.push(colors[rand(0..3)]) } if guess_count.zero?
+    self.guess = guess.shuffle if guess_count > 1
+    self.guess_count += 1
   end
 end
 
@@ -82,6 +85,14 @@ class Game
       end
     elsif gamemode == 2
       player.set_player_code
+
+      while winner == false
+        computer.set_computer_guess
+        update_board
+        compare_codes
+        winner?
+        break if loss?
+      end
     end
   end
 
@@ -99,10 +110,12 @@ class Game
     shuffled_messages = []
     code_to_guess = []
     guesses = []
+
     if gamemode == 1
       code_to_guess = computer_code
       guesses = player.guess
     end
+
     if gamemode == 2
       code_to_guess = player.player_code
       guesses = computer.guess
@@ -111,13 +124,13 @@ class Game
     code_to_guess.each_with_index do |color, color_index|
       guesses.each do |guess|
         # exact spot
-        if guess == color && computer_code[color_index] == player.guess[color_index]
+        if guess == color && code_to_guess[color_index] == guesses[color_index]
           shuffled_messages.push("#{guess.upcase} from column #{color_index + 1} is in the right spot!")
           break
         end
 
         # right color, wrong spot
-        if guess == color && computer_code[color_index] != player.guess[color_index]
+        if guess == color && code_to_guess[color_index] != guesses[color_index]
           # p "There is one/one more instance of the color #{guess.upcase}, but in a different column!"
           shuffled_messages.push("The color #{guess.upcase} is right, but there is one/one more of that color in a different spot!")
           break
@@ -131,7 +144,20 @@ class Game
   end
 
   def winner?
-    return unless player.guess == computer_code
+    code_to_guess = []
+    guesses = []
+
+    if gamemode == 1
+      code_to_guess = computer_code
+      guesses = player.guess
+    end
+
+    if gamemode == 2
+      code_to_guess = player.player_code
+      guesses = computer.guess
+    end
+
+    return unless guesses == code_to_guess
 
     self.winner = true
     p 'Congratulations, you cracked the code!'
@@ -147,7 +173,17 @@ class Game
   def update_board
     updated_row = []
 
-    player.guess.each do |cell|
+    if gamemode == 1
+      code_to_guess = computer_code
+      guesses = player.guess
+    end
+
+    if gamemode == 2
+      code_to_guess = player.player_code
+      guesses = computer.guess
+    end
+
+    guesses.each do |cell|
       cell += ' ' until cell.length == 6
       updated_row.push(cell)
     end
