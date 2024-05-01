@@ -27,15 +27,21 @@ class ComputerPlayer
   def generate_code
     computer_code = []
     4.times { computer_code.push(colors[rand(0..3)]) }
-    p computer_code
+    computer_code
   end
 end
 
 class HumanPlayer
+  def initialize
+    @guess
+  end
+
   def player_guess
     puts 'Take a guess! The colors are: red, blue, yellow and green.'
-    player_guess = gets.chomp.split
+    self.guess = gets.chomp.split
   end
+
+  attr_accessor :guess
 end
 
 class Game 
@@ -45,7 +51,6 @@ class Game
     @computer = ComputerPlayer.new
     @computer_code = computer.generate_code
     @player = HumanPlayer.new
-    @player_guess
     @winner = false
     @round_count = 0
   end
@@ -53,7 +58,7 @@ class Game
   def play
     while winner == false
       puts ' '
-      @player_guess = player.player_guess
+      player.guess = player.player_guess
       update_board
       compare_codes
       winner?
@@ -68,15 +73,15 @@ class Game
 
   def compare_codes
     computer_code.each_with_index do |color, color_index|
-      player_guess.each do |guess|
+      player.guess.each do |guess|
         # exact spot
-        if guess == color && computer_code[color_index] == player_guess[color_index]
+        if guess == color && computer_code[color_index] == player.guess[color_index]
           p "#{guess.upcase} from column #{color_index + 1} is in the right spot!"
           break
         end
 
         # right color, wrong spot
-        if guess == color && computer_code[color_index] != player_guess[color_index]
+        if guess == color && computer_code[color_index] != player.guess[color_index]
           p "There is one/one more instance of the color #{guess.upcase}, but in a different column!"
           break
         end
@@ -85,7 +90,7 @@ class Game
   end
 
   def winner?
-    return unless player_guess == computer_code
+    return unless player.guess == computer_code
 
     self.winner = true
     p 'Congratulations, you cracked the code!'
@@ -101,7 +106,7 @@ class Game
   def update_board
     updated_row = []
 
-    player_guess.each do |cell|
+    player.guess.each do |cell|
       cell += ' ' until cell.length == 6
       updated_row.push(cell)
     end
