@@ -57,6 +57,7 @@ class Game
       update_board
       compare_codes
       winner?
+      break if loss?
     end
   end
 
@@ -88,6 +89,13 @@ class Game
 
     self.winner = true
     p 'Congratulations, you cracked the code!'
+  end
+
+  def loss?
+    return unless round_count == 8 && winner == false
+
+    p 'You did not manage to crack the code in 8 rounds. Better luck next time!'
+    true
   end
 
   def update_board
