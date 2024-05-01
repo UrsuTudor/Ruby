@@ -4,7 +4,7 @@ require "pry-byebug"
 
 class Board
   def initialize
-    @game_board = Array.new(8) { Array.new(4, '   ') }
+    @game_board = Array.new(8) { Array.new(4, '      ') }
   end
   attr_reader :game_board
 
@@ -13,7 +13,7 @@ class Board
     game_board.each do |row|
       print "#{row_number += 1}."
       puts row.join('|')
-      puts '  ---+---+---+---'
+      puts '  ---------------------------'
     end
   end
 end
@@ -40,7 +40,8 @@ end
 
 class Game 
   def initialize
-    @board = Board.new.display_game_board
+    @board = Board.new
+    @board.display_game_board
     @computer = ComputerPlayer.new
     @computer_code = computer.generate_code
     @player = HumanPlayer.new
@@ -48,14 +49,18 @@ class Game
     @winner = false
   end
 
-  attr_reader :board, :computer, :player, :computer_code
-  attr_accessor :player_guess, :winner
-
   def play
     # will need to be in a loop, as opposed to game board and generate code
+    puts ' '
+    update_board
     compare_codes
     winner?
   end
+
+  private
+
+  attr_reader :board, :computer, :player, :computer_code
+  attr_accessor :player_guess, :winner
 
   def compare_codes
     computer_code.each_with_index do |color, color_index|
@@ -76,10 +81,22 @@ class Game
   end
 
   def winner?
-    if player_guess == computer_code
-      winner = true
-      p 'Congratulations, you cracked the code!'
+    return unless player_guess == computer_code
+
+    winner = true
+    p 'Congratulations, you cracked the code!'
+  end
+
+  def update_board
+    round_count = 0
+    updated_row = []
+    player_guess.each do |cell|
+      cell += ' ' until cell.length == 6
+      updated_row.push(cell)
     end
+    board.game_board[round_count] = updated_row
+    board.display_game_board
+    round_count += 1
   end
 end
 
