@@ -45,22 +45,25 @@ class Game
     @computer = ComputerPlayer.new
     @computer_code = computer.generate_code
     @player = HumanPlayer.new
-    @player_guess = player.player_guess
+    @player_guess
     @winner = false
+    @round_count = 0
   end
 
   def play
-    # will need to be in a loop, as opposed to game board and generate code
-    puts ' '
-    update_board
-    compare_codes
-    winner?
+    while winner == false
+      puts ' '
+      @player_guess = player.player_guess
+      update_board
+      compare_codes
+      winner?
+    end
   end
 
   private
 
   attr_reader :board, :computer, :player, :computer_code
-  attr_accessor :player_guess, :winner
+  attr_accessor :player_guess, :winner, :round_count
 
   def compare_codes
     computer_code.each_with_index do |color, color_index|
@@ -83,20 +86,22 @@ class Game
   def winner?
     return unless player_guess == computer_code
 
-    winner = true
+    self.winner = true
     p 'Congratulations, you cracked the code!'
   end
 
   def update_board
-    round_count = 0
     updated_row = []
+
     player_guess.each do |cell|
       cell += ' ' until cell.length == 6
       updated_row.push(cell)
     end
+
     board.game_board[round_count] = updated_row
     board.display_game_board
-    round_count += 1
+
+    self.round_count += 1
   end
 end
 
