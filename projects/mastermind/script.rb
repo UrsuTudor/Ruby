@@ -22,10 +22,9 @@ class ComputerPlayer
   def initialize
     @colors = %w[red blue yellow green]
     @guess = []
-    @guess_count = 0
   end
   attr_reader :colors
-  attr_accessor :guess, :guess_count
+  attr_accessor :guess
 
   def generate_code
     computer_code = []
@@ -33,10 +32,18 @@ class ComputerPlayer
     computer_code
   end
 
-  def set_computer_guess
-    4.times { guess.push(colors[rand(0..3)]) } if guess_count.zero?
-    self.guess = guess.shuffle if guess_count > 1
-    self.guess_count += 1
+  def computer_guess(player_code)
+    i = 0
+
+    4.times do
+      if guess[i] == player_code[i]
+        i += 1
+        next
+      end
+      guess[i] = colors[rand(0...4)]
+      i += 1
+      break if i == 4
+    end
   end
 end
 
@@ -67,13 +74,14 @@ class Game
     @computer = ComputerPlayer.new
     @computer_code = computer.generate_code
     @player = HumanPlayer.new
-    @winner = false
     @round_count = 0
+    @winner = false
     @gamemode
   end
 
   def play
     choose_gamemode
+
     if gamemode == 1
       while winner == false
         puts ' '
@@ -83,15 +91,18 @@ class Game
         winner?
         break if loss?
       end
+
     elsif gamemode == 2
       player.set_player_code
 
       while winner == false
-        computer.set_computer_guess
+        computer.computer_guess(player.player_code)
         update_board
         compare_codes
-        winner?
+        break if winner?
         break if loss?
+
+        next_turn
       end
     end
   end
@@ -131,7 +142,6 @@ class Game
 
         # right color, wrong spot
         if guess == color && code_to_guess[color_index] != guesses[color_index]
-          # p "There is one/one more instance of the color #{guess.upcase}, but in a different column!"
           shuffled_messages.push("The color #{guess.upcase} is right, but there is one/one more of that color in a different spot!")
           break
         end
@@ -159,8 +169,8 @@ class Game
 
     return unless guesses == code_to_guess
 
-    self.winner = true
     p 'Congratulations, you cracked the code!'
+    self.winner = true
   end
 
   def loss?
@@ -193,6 +203,15 @@ class Game
 
     self.round_count += 1
   end
+
+  def next_turn
+    puts 'Type any key to move on to the next turn!'
+    gets
+  end
 end
 
 Game.new.play
+
+# next: 
+  # allow player to move to the next round by typing next
+  # add logic to computer choices 
