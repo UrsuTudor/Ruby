@@ -59,7 +59,6 @@ def save_thank_you_letter(id,form_letter)
 end
 
 registered_per_hour = {}
-
 def peak_hours(reg_hour, registered_per_hour)
   if registered_per_hour[:"#{reg_hour}"]
     registered_per_hour[:"#{reg_hour}"] += 1
@@ -68,7 +67,40 @@ def peak_hours(reg_hour, registered_per_hour)
   end
 
   peak_hours = Hash[registered_per_hour.filter { |hour| registered_per_hour[:"#{hour}"] > 1 }.sort]
-  puts peak_hours
+end
+
+registered_per_weekday = {}
+def peak_days(date, registered_per_weekday)
+  # switch month and day elements for the Date.parse method
+  date[1], date[2] = date[2], date[1]
+  date = Date.parse(date.join)
+
+  day = date.wday
+  case day
+  when 0
+    day = 'Sunday'
+  when 1
+    day = 'Monday'
+  when 2
+    day = 'Tuesday'
+  when 3
+    day = 'Wednesday'
+  when 4
+    day = 'Thursday'
+  when 5
+    day = 'Friday'
+  when 6
+    day = 'Saturday'
+  end
+
+  # once the days are sorted out, use the same logic the hours algorhitm to create a hash containing the peak
+  if registered_per_weekday[:"#{day}"]
+    registered_per_weekday[:"#{day}"] += 1
+  else
+    registered_per_weekday[:"#{day}"] = 1
+  end
+
+  peak_days = Hash[registered_per_weekday.filter { |day| registered_per_weekday[:"#{day}"] > 1 }.sort.reverse]
 end
 
 contents.each do |row|
@@ -86,4 +118,7 @@ contents.each do |row|
   save_thank_you_letter(id, form_letter)
 
   peak_hours(Time.parse(row[:regdate].split[1]).hour, registered_per_hour)
+
+  # reversing places the year at the proper index for the Date.parse method
+  peak_days(row[:regdate].split[0].split('/').reverse, registered_per_weekday)
 end
