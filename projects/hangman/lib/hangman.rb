@@ -63,25 +63,32 @@ class Player
   end
 end
 
+class DottedLine
+  def initialize
+    @line = []
+  end
+
+  attr_accessor :line
+
+  def create_dotted_line(current_game_word)
+    current_game_word.length.times { line.push('_') }
+    puts " \n#{line.join}"
+  end
+end
+
 class Game 
   def initialize
     @current_game_word = Dictionary.new.current_game_word
     @gallow = Gallow.new
     @gallow.draw_gallows
+    @dotted_line = DottedLine.new.create_dotted_line(current_game_word)
     p @current_game_word
     @player = Player.new
   end
 
   attr_reader :current_game_word, :player
 
-  def display_dotted_line
-    dotted_line = []
-    current_game_word.length.times { dotted_line.push('_') }
-    puts " \n#{dotted_line.join}"
-  end
-
   def play
-    display_guesses
     player.player_letter_guess
   end
 end
