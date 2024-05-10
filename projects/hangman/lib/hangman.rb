@@ -49,17 +49,32 @@ class Gallow
   end
 end
 
+class Player 
+  def initialize
+    @player_letter
+    @player_word
+  end
+
+  attr_accessor :player_letter
+
+  def player_letter_guess
+    puts 'Guess a letter, any letter!'
+    self.player_letter = gets.chomp
+  end
+end
+
 class Game 
   def initialize
     @current_game_word = Dictionary.new.current_game_word
     @gallow = Gallow.new
     @gallow.draw_gallows
     p @current_game_word
+    @player = Player.new
   end
 
-  attr_reader :current_game_word
+  attr_reader :current_game_word, :player
 
-  def display_guesses
+  def display_dotted_line
     dotted_line = []
     current_game_word.length.times { dotted_line.push('_') }
     puts " \n#{dotted_line.join}"
@@ -67,6 +82,7 @@ class Game
 
   def play
     display_guesses
+    player.player_letter_guess
   end
 end
 
