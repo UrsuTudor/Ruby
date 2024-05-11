@@ -18,7 +18,6 @@ end
 
 class Gallow
   def initialize
-    @number_of_mistakes = 0
     @gallows = [['  ________'], ['   |   |'], ['   |'], ['   |'], ['   |'], [' ___________']]
   end
 
@@ -28,20 +27,19 @@ class Gallow
     puts gallows
   end
 
-  def draw_stickman
-    self.number_of_mistakes += 1
-    case self.number_of_mistakes
-    when 1
+  def draw_stickman(guesses_left)
+    case guesses_left
+    when 5
       gallows[2] = ['   |   o']
-    when 2
+    when 4
       gallows[3] = ['   |   |']
     when 3
       gallows[3] = ['   |  /|']
-    when 4
+    when 2
       gallows[3] = ['   |  /|\\']
-    when 5
+    when 1
       gallows[4] = ['   |  /']
-    when 6
+    when 0
       gallows[4] = ['   |  / \\']
     end
     puts number_of_mistakes
@@ -89,14 +87,14 @@ class Game
     @guesses_left = 6
   end
 
-  attr_reader :current_game_word, :player
+  attr_reader :current_game_word, :player, :gallow
   attr_accessor :dotted_line, :round, :guesses_left
 
   def handle_player_guess(current_game_word, player_letter_guess, dotted_line)
     current_game_word.each_with_index do |letter, index|
       dotted_line.line[index] = player_letter_guess.downcase if letter == player_letter_guess.downcase
     end
-    puts dotted_line.line.join
+    puts "\nProgress: #{dotted_line.line.join}"
 
     if current_game_word.none?(player_letter_guess.downcase)
       dotted_line.wrong_guesses.push(player_letter_guess)
@@ -123,6 +121,7 @@ class Game
     until loser? || winner?
       player_letter_guess = player.player_letter_guess
       handle_player_guess(current_game_word, player_letter_guess, dotted_line)
+      gallow.draw_stickman(guesses_left)
     end
   end
 end
