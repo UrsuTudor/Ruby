@@ -86,11 +86,11 @@ class Game
     @dotted_line.create_dotted_line(current_game_word)
     p @current_game_word
     @player = Player.new
-    @round = 0
+    @guesses_left = 6
   end
 
   attr_reader :current_game_word, :player
-  attr_accessor :dotted_line, :round
+  attr_accessor :dotted_line, :round, :guesses_left
 
   def handle_player_guess(current_game_word, player_letter_guess, dotted_line)
     current_game_word.each_with_index do |letter, index|
@@ -98,12 +98,15 @@ class Game
     end
     puts dotted_line.line.join
 
-    dotted_line.wrong_guesses.push(player_letter_guess) if current_game_word.none?(player_letter_guess.downcase)
+    if current_game_word.none?(player_letter_guess.downcase)
+      dotted_line.wrong_guesses.push(player_letter_guess)
+      self.guesses_left -= 1
+    end
     puts "\nWrong guesses: #{dotted_line.wrong_guesses.join(',')}"
   end
 
   def play
-    6.times do
+    until guesses_left.zero? || dotted_line.line == current_game_word
       player_letter_guess = player.player_letter_guess
       handle_player_guess(current_game_word, player_letter_guess, dotted_line)
     end
