@@ -105,8 +105,22 @@ class Game
     puts "\nWrong guesses: #{dotted_line.wrong_guesses.join(',')}"
   end
 
+  def winner?
+    return unless dotted_line.line == current_game_word
+
+    puts 'Yaay! You got away free!'
+    true
+  end
+
+  def loser?
+    return unless guesses_left.zero?
+
+    puts 'Oh no! Perhaps you will do better in your next life!'
+    true
+  end
+
   def play
-    until guesses_left.zero? || dotted_line.line == current_game_word
+    until loser? || winner?
       player_letter_guess = player.player_letter_guess
       handle_player_guess(current_game_word, player_letter_guess, dotted_line)
     end
