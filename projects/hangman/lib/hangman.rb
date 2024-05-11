@@ -75,16 +75,6 @@ class DottedLine
     current_game_word.length.times { line.push('_') }
     puts " \n#{line.join}"
   end
-
-  def update_dotted_line(current_game_word, player_letter_guess, dotted_line)
-    current_game_word.each_with_index do |letter, index|
-      dotted_line.line[index] = player_letter_guess.downcase if letter == player_letter_guess.downcase
-    end
-    puts line.join
-
-    wrong_guesses.push(player_letter_guess) if current_game_word.none?(player_letter_guess.downcase)
-    puts "\nWrong guesses: #{@wrong_guesses.join(',')}"
-  end
 end
 
 class Game 
@@ -96,15 +86,26 @@ class Game
     @dotted_line.create_dotted_line(current_game_word)
     p @current_game_word
     @player = Player.new
+    @round = 0
   end
 
   attr_reader :current_game_word, :player
-  attr_accessor :dotted_line
+  attr_accessor :dotted_line, :round
+
+  def handle_player_guess(current_game_word, player_letter_guess, dotted_line)
+    current_game_word.each_with_index do |letter, index|
+      dotted_line.line[index] = player_letter_guess.downcase if letter == player_letter_guess.downcase
+    end
+    puts dotted_line.line.join
+
+    dotted_line.wrong_guesses.push(player_letter_guess) if current_game_word.none?(player_letter_guess.downcase)
+    puts "\nWrong guesses: #{dotted_line.wrong_guesses.join(',')}"
+  end
 
   def play
-    current_game_word.length.times do
+    6.times do
       player_letter_guess = player.player_letter_guess
-      dotted_line.update_dotted_line(current_game_word, player_letter_guess, dotted_line)
+      handle_player_guess(current_game_word, player_letter_guess, dotted_line)
     end
   end
 end
