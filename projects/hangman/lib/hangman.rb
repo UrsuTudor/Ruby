@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-class Dictionary 
+# loads in the dictionary and gets a random word out
+class Dictionary
   def initialize
     @dictionary_words = File.read('google-10000-english-no-swears.txt').split
     @current_game_word = game_word
@@ -16,12 +17,11 @@ class Dictionary
   end
 end
 
+# draws the gallows and the stickman
 class Gallow
   def initialize
     @gallows = [['  ________'], ['   |   |'], ['   |'], ['   |'], ['   |'], [' ___________']]
   end
-
-  attr_accessor :gallows, :number_of_mistakes
 
   def draw_gallows
     puts gallows
@@ -42,87 +42,101 @@ class Gallow
     when 0
       gallows[4] = ['   |  / \\']
     end
-    puts number_of_mistakes
     draw_gallows
   end
+
+  private
+
+  attr_accessor :gallows
 end
 
-class Player 
+# gets player guess
+class Player
   def initialize
     @player_letter
-    @player_word
   end
-
-  attr_accessor :player_letter
 
   def player_letter_guess
     puts 'Guess a letter, any letter!'
     self.player_letter = gets.chomp
   end
+
+  private
+
+  attr_accessor :player_letter
 end
 
+# creates the dotted line
 class DottedLine
   def initialize
     @line = []
-    @wrong_guesses = []
   end
 
-  attr_accessor :line, :wrong_guesses
+  attr_reader :line
 
   def create_dotted_line(current_game_word)
     current_game_word.length.times { line.push('_') }
     puts " \n#{line.join}"
   end
+
+  private
+
+  attr_writer :line
 end
 
-class Game 
+# brings it all together, handling player guesses and establishing whether the player won or lost
+class Game
   def initialize
     @current_game_word = Dictionary.new.current_game_word
     @gallow = Gallow.new
     @gallow.draw_gallows
     @dotted_line = DottedLine.new
     @dotted_line.create_dotted_line(current_game_word)
-    p @current_game_word
     @player = Player.new
     @guesses_left = 6
+    @wrong_guesses = []
   end
 
-  attr_reader :current_game_word, :player, :gallow
-  attr_accessor :dotted_line, :round, :guesses_left
+  def play
+    until loss? || win?
+      player_letter_guess = player.player_letter_guess
+      handle_player_guess(current_game_word, player_letter_guess, dotted_line)
+      gallow.draw_stickman(guesses_left)
+    end
+  end
 
-  def handle_player_guess(current_game_word, player_letter_guess, dotted_line)
-    current_game_word.each_with_index do |letter, index|
-      dotted_line.line[index] = player_letter_guess.downcase if letter == player_letter_guess.downcase
+  private
+
+  attr_reader :current_game_word, :player, :gallow
+  attr_accessor :dotted_line, :round, :guesses_left, :wrong_guesses
+
+  def handle_player_guess(word, guess, dotted_line)
+    # on right guess
+    word.each_with_index do |letter, index|
+      dotted_line.line[index] = guess.downcase if letter == guess.downcase
     end
     puts "\nProgress: #{dotted_line.line.join}"
 
-    if current_game_word.none?(player_letter_guess.downcase)
-      dotted_line.wrong_guesses.push(player_letter_guess)
+    # on wrong guess
+    if word.none?(guess.downcase)
+      wrong_guesses.push(guess)
       self.guesses_left -= 1
     end
-    puts "\nWrong guesses: #{dotted_line.wrong_guesses.join(',')}"
+    puts "\nWrong guesses: #{wrong_guesses.join(',')}"
   end
 
-  def winner?
+  def win?
     return unless dotted_line.line == current_game_word
 
     puts 'Yaay! You got away free!'
     true
   end
 
-  def loser?
+  def loss?
     return unless guesses_left.zero?
 
-    puts 'Oh no! Perhaps you will do better in your next life!'
+    puts "The word was:\"#{current_game_word.join}\". Perhaps you will do better in your next life!"
     true
-  end
-
-  def play
-    until loser? || winner?
-      player_letter_guess = player.player_letter_guess
-      handle_player_guess(current_game_word, player_letter_guess, dotted_line)
-      gallow.draw_stickman(guesses_left)
-    end
   end
 end
 
