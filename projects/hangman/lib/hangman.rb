@@ -59,7 +59,7 @@ class Player
   end
 
   def player_letter_guess
-    puts 'Guess a letter, any letter!'
+    puts "\nGuess a letter, any letter!"
     self.player_letter = gets.chomp
   end
 
@@ -96,7 +96,7 @@ class Game
   end
 
   def choose_game
-    puts 'Do you want to play a new game or load an older save?'
+    puts "\nDo you want to play a new game or load an older save?"
     choice = gets.chomp
     case choice
     when 'new'
@@ -112,18 +112,40 @@ class Game
   attr_reader :player
   attr_accessor :dotted_line, :round, :guesses_left, :wrong_guesses, :save_file, :current_game_word, :gallow
 
+  def play
+    puts "\nRemember, you can save your progress at any point by typing 'save' when the game asks you to guess a letter!"
+
+    until loss? || win?
+      player_letter_guess = player.player_letter_guess
+      handle_player_guess(current_game_word, player_letter_guess, dotted_line)
+      gallow.draw_stickman(guesses_left)
+    end
+  end
+
   def handle_player_guess(word, guess, dotted_line)
+    numbers = '1234567890'
+    p guess
     # on right guess
     word.each_with_index do |letter, index|
       dotted_line.line[index] = guess.downcase if letter == guess.downcase
     end
-    puts "\nProgress: #{dotted_line.line.join}"
 
     # on wrong guess
-    if word.none?(guess.downcase)
+    if guess == 'save'
+      save_game
+      puts 'Your progress was saved! Feel free to come back later!'
+    elsif numbers.include?(guess)
+      puts 'Silly, words don\'t have numbers in them!'
+    elsif guess.length > 1
+      puts 'Only one letter at a time, please!'
+    elsif guess == ''
+      puts 'Come on, have courage and guess already!'
+    elsif word.none?(guess.downcase)
       wrong_guesses.push(guess)
       self.guesses_left -= 1
     end
+
+    puts "\nProgress: #{dotted_line.line.join}"
     puts "\nWrong guesses: #{wrong_guesses.join(',')}"
   end
 
@@ -162,15 +184,6 @@ class Game
     dotted_line.line = data['dotted_line']
     self.guesses_left = data['guesses_left']
     self.wrong_guesses = data['wrong_guesses']
-  end
-
-  def play
-    until loss? || win?
-      player_letter_guess = player.player_letter_guess
-      handle_player_guess(current_game_word, player_letter_guess, dotted_line)
-      gallow.draw_stickman(guesses_left)
-      save_game
-    end
   end
 end
 
