@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+require 'erb'
+require 'json'
+require 'pry-byebug'
+
 # loads in the dictionary and gets a random word out
 class Dictionary
   def initialize
@@ -45,8 +49,6 @@ class Gallow
     draw_gallows
   end
 
-  private
-
   attr_accessor :gallows
 end
 
@@ -72,16 +74,12 @@ class DottedLine
     @line = []
   end
 
-  attr_reader :line
+  attr_accessor :line
 
   def create_dotted_line(current_game_word)
     current_game_word.length.times { line.push('_') }
     puts " \n#{line.join}"
   end
-
-  private
-
-  attr_writer :line
 end
 
 # brings it all together, handling player guesses and establishing whether the player won or lost
@@ -97,18 +95,22 @@ class Game
     @wrong_guesses = []
   end
 
-  def play
-    until loss? || win?
-      player_letter_guess = player.player_letter_guess
-      handle_player_guess(current_game_word, player_letter_guess, dotted_line)
-      gallow.draw_stickman(guesses_left)
+  def choose_game
+    puts 'Do you want to play a new game or load an older save?'
+    choice = gets.chomp
+    case choice
+    when 'new'
+      play
+    when 'load'
+      load_game
+      play
     end
   end
 
   private
 
-  attr_reader :current_game_word, :player, :gallow
-  attr_accessor :dotted_line, :round, :guesses_left, :wrong_guesses
+  attr_reader :player
+  attr_accessor :dotted_line, :round, :guesses_left, :wrong_guesses, :save_file, :current_game_word, :gallow
 
   def handle_player_guess(word, guess, dotted_line)
     # on right guess
@@ -138,6 +140,40 @@ class Game
     puts "The word was:\"#{current_game_word.join}\". Perhaps you will do better in your next life!"
     true
   end
+
+  def save_game
+    serialized_game = JSON.dump({ current_game_word: current_game_word,
+                                  gallows: gallow.gallows,
+                                  dotted_line: dotted_line.line,
+                                  guesses_left: guesses_left,
+                                  wrong_guesses: wrong_guesses })
+
+    File.open('save.json', 'w') do |file|
+      file.puts serialized_game
+    end
+  end
+
+  def load_game
+    save_file = File.read('save.json')
+    data = JSON.parse(save_file)
+
+    self.current_game_word = data['current_game_word']
+    gallow.gallows = data['gallows']
+    dotted_line.line = data['dotted_line']
+    self.guesses_left = data['guesses_left']
+    self.wrong_guesses = data['wrong_guesses']
+  end
+
+  def play
+    until loss? || win?
+      player_letter_guess = player.player_letter_guess
+      handle_player_guess(current_game_word, player_letter_guess, dotted_line)
+      gallow.draw_stickman(guesses_left)
+      save_game
+    end
+  end
 end
 
-Game.new.play
+game = Game.new
+
+game.choose_game
