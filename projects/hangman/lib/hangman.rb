@@ -124,13 +124,12 @@ class Game
 
   def handle_player_guess(word, guess, dotted_line)
     numbers = '1234567890'
-    p guess
     # on right guess
     word.each_with_index do |letter, index|
       dotted_line.line[index] = guess.downcase if letter == guess.downcase
     end
 
-    # on wrong guess
+    # on save/wrong input/wrong guess
     if guess == 'save'
       save_game
       puts 'Your progress was saved! Feel free to come back later!'
