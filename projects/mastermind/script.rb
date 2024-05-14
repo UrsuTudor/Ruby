@@ -1,7 +1,6 @@
 # frozen_string_literal:true
 
-require "pry-byebug"
-
+# initiates and displays board
 class Board
   def initialize
     @game_board = Array.new(8) { Array.new(4, '      ') }
@@ -18,6 +17,7 @@ class Board
   end
 end
 
+# generates code on gamemode 1 and computer guesses in gamemode 2
 class ComputerPlayer
   def initialize
     @colors = %w[red blue yellow green]
@@ -36,7 +36,9 @@ class ComputerPlayer
     i = 0
 
     4.times do
-      if guess[i] == player_code[i]
+      if player_code.include?(guess[i])
+        puts "I'm included!"
+      elsif guess[i] == player_code[i]
         i += 1
         next
       end
@@ -47,6 +49,7 @@ class ComputerPlayer
   end
 end
 
+# stores player guesses in gamemode 1 and player code in gamemode 2
 class HumanPlayer
   def initialize
     @guess
@@ -67,6 +70,7 @@ class HumanPlayer
   end
 end
 
+# makes it possible to play the game by bringing all elements together
 class Game 
   def initialize
     @board = Board.new
@@ -107,15 +111,15 @@ class Game
     end
   end
 
-  def choose_gamemode
-    puts "Choose gamemode: type 1 if you want to guess the computer's code or 2 if you want the computer to guess your code."
-    self.gamemode = gets.chomp.to_i
-  end
-
   private
 
   attr_reader :board, :computer, :player, :computer_code
   attr_accessor :player_guess, :winner, :round_count, :gamemode
+
+  def choose_gamemode
+    puts "Choose gamemode: type 1 if you want to guess the computer's code or 2 if you want the computer to guess your code."
+    self.gamemode = gets.chomp.to_i
+  end
 
   def compare_codes
     shuffled_messages = []
@@ -183,15 +187,9 @@ class Game
   def update_board
     updated_row = []
 
-    if gamemode == 1
-      code_to_guess = computer_code
-      guesses = player.guess
-    end
+    guesses = player.guess if gamemode == 1
 
-    if gamemode == 2
-      code_to_guess = player.player_code
-      guesses = computer.guess
-    end
+    guesses = computer.guess if gamemode == 2
 
     guesses.each do |cell|
       cell += ' ' until cell.length == 6
@@ -212,6 +210,7 @@ end
 
 Game.new.play
 
-# next: 
-  # allow player to move to the next round by typing next
-  # add logic to computer choices 
+arr1 = [1, 2, 3]
+arr2 = [2, 3, 1]
+
+puts 'hey' if arr2.include?(arr1[0])

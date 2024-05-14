@@ -128,7 +128,7 @@
       # class (e.g. MessagePack, JSON, YAML) to get a different
       # serialization
 
-      #   @@serializer = JSON
+      #   @@serializer = MessagePack
 
       #   def serialize
       #     obj = {}
