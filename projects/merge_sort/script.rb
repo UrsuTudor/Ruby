@@ -8,3 +8,14 @@ def merge_sort(arr)
     merge_sort(right_side)
   end
 end
+
+def merge(left, right)
+  sorted = []
+  if left.first > right.first
+    sorted << right.first
+    sorted << left.first
+  elsif left.first < right.first
+    sorted << left.first
+    sorted << right.first
+  end
+end
