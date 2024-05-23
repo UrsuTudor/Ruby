@@ -86,11 +86,11 @@ class LinkedList
     end
   end
 
-  def each_with_index
+  def each
     list_length = list.length
     index = 0
     until index == list_length
-      yield(list[index], index)
+      yield(list[index])
       index += 1
     end
     self
@@ -109,8 +109,15 @@ class Node
   end
 
   def key
-    key = value.each { |key, value| return key}
+    key = value.each_key { |key| return key}
   end
+
+  def update_value(new_val)
+    value.each_key do |key|
+      self.value = { "#{key}": new_val }
+    end
+  end
+
   attr_accessor :value, :next_node
 end
 
@@ -145,12 +152,10 @@ class HashMap
       return
     end
 
-    # updates node if the key is a duplicate; I chose an each_with_index because 
-    # the indexes are needed for the #delete_at and #insert_at methods
-    buckets[index].each_with_index do |node, node_index|
+    # updates node if the key is a duplicate
+    buckets[index].each do |node|
       if node.key.to_s == key
-        buckets[index].delete_at(node_index)
-        buckets[index].insert_at(hash_object, node_index)
+        node.update_value(value)
         p buckets[index]
         return
       end
