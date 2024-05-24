@@ -96,6 +96,16 @@ class LinkedList
     self
   end
 
+  def each_with_index
+    list_length = list.length
+    index = 0
+    until index == list_length
+      yield(list[index], index)
+      index += 1
+    end
+    self
+  end
+
   private
 
   attr_accessor :list
@@ -187,5 +197,79 @@ class HashMap
     end
 
     false
+  end
+
+  def remove(key)
+    buckets.each do |bucket|
+      next if bucket.nil?
+
+      bucket.each_with_index do |node, node_index|
+        if node.hash_key.to_s == key
+          bucket.delete_at(node_index)
+          return node.hash_value
+        end
+      end
+    end
+
+    nil
+  end
+
+  def length
+    length = 0
+    buckets.each do |bucket|
+      next if bucket.nil?
+
+      bucket.each { length += 1 }
+    end
+
+    length
+  end
+
+  def clear
+    buckets.each_with_index do |bucket, index|
+      next if bucket.nil?
+
+      buckets[index] = nil
+    end
+    buckets
+  end
+
+  def keys
+    keys = []
+
+    buckets.each do |bucket|
+      next if bucket.nil?
+
+      bucket.each { |node| keys.push(node.hash_key) }
+    end
+
+    keys
+  end
+
+  def values
+    values = []
+
+    buckets.each do |bucket|
+      next if bucket.nil?
+
+      bucket.each { |node| values.push(node.hash_value) }
+    end
+
+    values
+  end
+
+  def entries
+    entries = []
+
+    buckets.each do |bucket|
+      next if bucket.nil?
+
+      bucket.each do |node|
+        hash = [node.hash_key, node.hash_value]
+        entries.push(hash)
+      end
+    end
+
+    entries
   end
 end
