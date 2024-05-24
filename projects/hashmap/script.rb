@@ -155,6 +155,9 @@ class HashMap
   end
 
   def set(key, value)
+    # doubles the number of buckets if the load_factor is met
+    add_buckets
+
     hash_object = { "#{key}": value }
     index = hash(key) % capacity
 
@@ -218,8 +221,7 @@ class HashMap
     length = 0
     buckets.each do |bucket|
       next if bucket.nil?
-
-      bucket.each { length += 1 }
+      bucket.each { |node| length += 1 }
     end
 
     length
@@ -271,5 +273,13 @@ class HashMap
     end
 
     entries
+  end
+
+  def add_buckets
+    if length.to_f / capacity >= load_factor
+      bucket_extension = Array.new(buckets.length)
+      self.capacity = buckets.length * 2
+      self.buckets += bucket_extension
+    end
   end
 end
