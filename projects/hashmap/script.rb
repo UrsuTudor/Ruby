@@ -108,8 +108,12 @@ class Node
     @next_node = next_node
   end
 
-  def key
+  def hash_key
     key = value.each_key { |key| return key}
+  end
+
+  def hash_value
+    val = value.each { |key, value| return value}
   end
 
   def update_value(new_val)
@@ -154,9 +158,8 @@ class HashMap
 
     # updates node if the key is a duplicate
     buckets[index].each do |node|
-      if node.key.to_s == key
+      if node.hash_key.to_s == key
         node.update_value(value)
-        p buckets[index]
         return
       end
     end
@@ -164,5 +167,15 @@ class HashMap
     # appends the new hash_objects if the two ifs above don't return
     buckets[index].append(hash_object)
     buckets[index].increment_next_node
+  end
+
+  def get(key)
+    buckets.each do |bucket|
+      next if bucket.nil?
+
+      bucket.each { |node| return node.hash_value if node.hash_key.to_s == key }
+    end
+
+    nil
   end
 end
