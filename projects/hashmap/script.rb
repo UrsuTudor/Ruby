@@ -178,4 +178,14 @@ class HashMap
 
     nil
   end
+
+  def has?(key)
+    buckets.each do |bucket|
+      next if bucket.nil?
+
+      bucket.each { |node| return true if node.hash_key.to_s == key }
+    end
+
+    false
+  end
 end
