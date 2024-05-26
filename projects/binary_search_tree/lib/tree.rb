@@ -34,6 +34,19 @@ class Tree
     root
   end
 
+  def delete(val, root = self.root)
+    # binding.pry
+    return nil if val == root.data
+
+    if val > root.data
+      root.right = delete(val, root.right)
+    elsif val < root.data
+      root.left = delete(val, root.left)
+    end
+
+    root
+  end
+
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.data}"
