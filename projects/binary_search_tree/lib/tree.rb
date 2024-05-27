@@ -66,6 +66,16 @@ class Tree
     next_biggest(root.left)
   end
 
+  def find(val, root = self.root)
+    return root if val == root.data
+
+    if val > root.data
+      find(val, root.right)
+    elsif val < root.data
+      find(val, root.left)
+    end
+  end
+
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.data}"
