@@ -11,6 +11,6 @@ class Node
   attr_accessor :left, :right
 
   def <=>(other)
-    data <=> other.data
+    data <=> other
   end
 end

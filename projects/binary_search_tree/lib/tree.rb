@@ -35,9 +35,21 @@ class Tree
   end
 
   def delete(val, root = self.root)
-    # binding.pry
-    return nil if val == root.data
+    # handle cases in which left, right or both are nil
+    return root.right if val == root.data && root.left.nil?
+    return root.left if val == root.data && root.right.nil?
 
+    # handle cases in which the root to be deleted has two children
+    if val == root.data && !root.right.nil? && !root.left.nil?
+      next_biggest = next_biggest(root.right)
+      delete(next_biggest, root)
+
+      next_biggest.left = root.left
+      next_biggest.right = root.right
+      return next_biggest
+    end
+
+    # the actual recursion
     if val > root.data
       root.right = delete(val, root.right)
     elsif val < root.data
@@ -45,6 +57,13 @@ class Tree
     end
 
     root
+  end
+
+  # helper method for delete
+  def next_biggest(root)
+    return root if root.left.nil?
+
+    next_biggest(root.left)
   end
 
   def pretty_print(node = @root, prefix = '', is_left = true)
