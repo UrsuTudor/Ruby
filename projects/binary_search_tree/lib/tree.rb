@@ -76,7 +76,7 @@ class Tree
     end
   end
 
-  def level_order(root = self.root, queue = [], &block)
+  def level_order(root = self.root, queue = [], values_arr = [], &block)
     # dequeues the element that is currently being iterated over
     queue.shift
 
@@ -84,13 +84,16 @@ class Tree
     queue.push(root.left) unless root.left.nil?
     queue.push(root.right) unless root.right.nil?
 
-    data = root.data
-    yield data
+    if block_given?
+      yield root.data
+      # queue being empty means there were no more children to push
+      return if queue.empty?
+    else
+      values_arr.push(root.data)
+      return values_arr if queue.empty?
+    end
 
-    # queue being empty means there were no more children to push
-    return if queue.empty?
-
-    level_order(queue[0], queue, &block)
+    level_order(queue[0], queue, values_arr, &block)
   end
 
   def pretty_print(node = @root, prefix = '', is_left = true)
