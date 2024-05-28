@@ -143,13 +143,23 @@ class Tree
     end
   end
 
-  def balanced?(tree = root)
-    right = height(tree.right)
-    left = height(tree.left)
+  def balanced?(node = root)
+    right = height(node.right)
+    left = height(node.left)
 
     return false if right - left > 1 || left - right > 1
 
     true
+  end
+
+  def rebalance
+    arr = []
+
+    inorder do |node|
+      arr.push(node)
+    end
+
+    build_tree(arr)
   end
 
   def pretty_print(node = @root, prefix = '', is_left = true)
