@@ -96,6 +96,30 @@ class Tree
     level_order(queue[0], queue, values_arr, &block)
   end
 
+  def preorder(root = self.root, &block)
+    return if root.nil?
+
+    yield root.data
+    preorder(root.left, &block)
+    preorder(root.right, &block)
+  end
+
+  def inorder(root = self.root, &block)
+    return if root.nil?
+
+    inorder(root.left, &block)
+    yield root.data
+    inorder(root.right, &block)
+  end
+
+  def postorder(root = self.root, &block)
+    return if root.nil?
+
+    postorder(root.left, &block)
+    postorder(root.right, &block)
+    yield root.data
+  end
+
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.data}"
