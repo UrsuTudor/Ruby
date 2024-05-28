@@ -49,7 +49,7 @@ class Tree
       return next_biggest
     end
 
-    # the actual recursion
+    # the recursion
     if val > root.data
       root.right = delete(val, root.right)
     elsif val < root.data
