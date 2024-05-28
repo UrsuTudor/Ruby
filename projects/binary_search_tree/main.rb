@@ -1,8 +1,6 @@
 require_relative 'lib/tree'
 require_relative 'lib/node'
 
-tree = Tree.new([5, 6, 4, 3, 2, 1, 8, 10, 9, 7, 11, 12, 13, 14, 15, 16, 0])
+tree = Tree.new([5, 6, 4, 3, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17])
 tree.pretty_print
-tree.postorder do |root|
-  p root
-end
+p tree.height

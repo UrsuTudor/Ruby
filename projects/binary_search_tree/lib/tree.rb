@@ -120,6 +120,19 @@ class Tree
     yield root.data
   end
 
+  def height(node = self.root)
+    return 0 if node.nil?
+
+    left_height = height(node.left)
+    right_height = height(node.right)
+
+    if left_height > right_height
+      left_height + 1
+    else
+      right_height + 1
+    end
+  end
+
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.data}"
