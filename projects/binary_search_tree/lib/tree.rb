@@ -143,6 +143,15 @@ class Tree
     end
   end
 
+  def balanced?(tree = root)
+    right = height(tree.right)
+    left = height(tree.left)
+
+    return false if right - left > 1 || left - right > 1
+
+    true
+  end
+
   def pretty_print(node = @root, prefix = '', is_left = true)
     pretty_print(node.right, "#{prefix}#{is_left ? '│   ' : '    '}", false) if node.right
     puts "#{prefix}#{is_left ? '└── ' : '┌── '}#{node.data}"
