@@ -120,7 +120,7 @@ class Tree
     yield root.data
   end
 
-  def height(node = self.root)
+  def height(node)
     return 0 if node.nil?
 
     left_height = height(node.left)
@@ -130,6 +130,16 @@ class Tree
       left_height + 1
     else
       right_height + 1
+    end
+  end
+
+  def depth(value, depth = 0, root = self.root)
+    return depth if value == root.data
+
+    if value > root.data
+      depth(value, depth + 1, root.right)
+    else
+      depth(value, depth + 1, root.left)
     end
   end
 
