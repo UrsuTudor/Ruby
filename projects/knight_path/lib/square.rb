@@ -33,4 +33,40 @@ class Square
       Square.new(path, square)
     end
   end
+
+  def knight_moves(position, final, queue = [], initial_pos = nil)
+    # makes it easier to remember the initial position on each iteration
+    # we keept it because it is needed later for the find_path method
+    if queue.empty?
+      initial_pos = position
+      position = Square.new(position)
+    end
+
+    if position.coords == final
+      path = find_path(position, initial_pos)
+
+      puts "You made it in #{path.length - 1} moves! This was your path:"
+      return path.each { |coord| p coord }
+    end
+
+    queue.shift
+
+    position.find_possible_paths(position)
+    position.possible_paths.each do |path|
+      queue.push(path)
+    end
+
+    knight_moves(queue[0], final, queue, initial_pos)
+  end
+
+  def find_path(position, initial_pos, history = [])
+    if position.coords == initial_pos
+      history.push(initial_pos)
+      return history.reverse
+    end
+
+    history.push(position.coords)
+
+    find_path(position.visited_from, initial_pos, history)
+  end
 end
