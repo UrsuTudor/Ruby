@@ -9,6 +9,7 @@ def caesar_cipher(string, shift_factor = 0)
     next ciphered_string.push(character) if alphabet.include?(character.downcase) == false
 
     cipher_character_index = alphabet.index(character.downcase).to_i + shift_factor
+
     # wraps back to 'a' if cipher_character_index would go beyond 'z'
     cipher_character_index -= 26 if cipher_character_index > 25
 
@@ -17,7 +18,7 @@ def caesar_cipher(string, shift_factor = 0)
     ciphered_string.push(alphabet[cipher_character_index])
   end
 
-  p ciphered_string.join
+  ciphered_string.join
 end
 
 caesar_cipher('What a string!', 5)
