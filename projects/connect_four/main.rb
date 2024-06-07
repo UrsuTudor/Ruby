@@ -1,6 +1,8 @@
 require_relative 'lib/game'
 
 game = Game.new
+game.place_color
+game.place_color
 game.display_board
 
 # How do you check if there are 4 connected dots

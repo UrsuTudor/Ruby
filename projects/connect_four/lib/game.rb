@@ -19,10 +19,14 @@ class Game
     end
   end
 
-  def place_color(row, col)
-    return 'That space is already occupied.' unless board[row - 1][col - 1].nil?
+  def place_color
+    loop do
+      puts 'Please select an empty space.'
+      space = gets.chomp.split(',').map { |num| num.to_i - 1 }
+      next puts 'That space is already occupied.' unless board[space[0]][space[1]].nil?
 
-    board[row - 1][col - 1] = Space.new('r') if round.even? || round.zero?
-    board[row - 1][col - 1] = Space.new('y') if round.odd?
+      return board[space[0]][space[1]] = Space.new('r') if round.even? || round.zero?
+      return board[space[0]][space[1]] = Space.new('y') if round.odd?
+    end
   end
 end
