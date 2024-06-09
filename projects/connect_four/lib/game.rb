@@ -11,10 +11,13 @@ class Game
   attr_accessor :round
 
   def display_board
-    puts ''
     board.each do |row|
       row.each do |column|
-        print "  #{column}  |"
+        if column.nil?
+          print "  #{column}  |"
+        else
+          print "  #{column.player} |"
+        end
       end
       puts "\n ----------------------------------"
     end

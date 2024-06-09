@@ -10,4 +10,6 @@ class Space
     @lower_left = nil
     @lower_right = nil
   end
+
+  attr_reader :player
 end
