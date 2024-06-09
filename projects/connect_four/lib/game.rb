@@ -24,17 +24,40 @@ class Game
   end
 
   def row_win?(space)
-    if space[1] >= 3
-      backwards = board[space[0]][space[1] - 3..space[1]]
-      return true if backwards.uniq.size <= 1
-    end
-
-    if space[1] <= 3
-      forwards = board[space[0]][space[1]..space[1] + 3]
-      return true if forwards.uniq.size <= 1
-    end
+    return true if forwards?(space)
+    return true if backwards?(space)
+    return true if central?(space)
 
     false
+  end
+
+  def forwards?(space)
+    return unless space[1] <= 3
+
+    forwards = board[space[0]][space[1]..space[1] + 3]
+    true if forwards.uniq.size <= 1
+  end
+
+  def backwards?(space)
+    return unless space[1] >= 3
+
+    backwards = board[space[0]][space[1] - 3..space[1]]
+    true if backwards.uniq.size <= 1
+  end
+
+  def central?(space)
+    if space[1] == 1 || space[1] == 2
+      section = board[0][0..3]
+      return true if section.uniq.size <= 1
+    end
+
+    return unless space[1] == 4 || space[1] == 5
+
+    section = board[0][3..6]
+    true if section.uniq.size <= 1
+  end
+
+  def column_win?(space)
   end
 
   def display_board

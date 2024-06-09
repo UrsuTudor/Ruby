@@ -90,4 +90,23 @@ describe Game do
       expect(game.row_win?(space)).to be(false)
     end
   end
+
+  describe 'column_win?' do
+    before do
+      game.place_color([1, 0])
+      game.place_color([2, 0])
+      game.place_color([3, 0])
+      game.place_color([4, 0])
+    end
+
+    it 'returns true if there are 4 elements of the same type coming one after another in a column' do
+      space = [2, 0]
+      expect(game.column_win?(space)).to be(true)
+    end
+
+    it 'returns false if there are not 4 elements of the same type coming one after another in a column' do
+      space = [0, 4]
+      expect(game.column_win?(space)).to be(false)
+    end
+  end
 end
