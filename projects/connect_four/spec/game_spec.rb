@@ -46,17 +46,46 @@ describe Game do
         game.place_color
         expect(board[0][0].instance_variable_get(:@player)).to eq('y')
       end
+    end
+  end
 
-      it 'loops if the space is already occupied' do
-        board = game.instance_variable_get(:@board)
-        expect(game).to receive(:gets).and_return('1, 1')
-        game.place_color
-        expect(game).to receive(:gets).and_return('1, 1')
-        expect(game).to receive(:puts).with('Please select an empty space.').twice
-        expect(game).to receive(:puts).with('That space is already occupied.')
-        expect(game).to receive(:gets).and_return('1, 2')
-        game.place_color
-      end
+  describe 'out_of_bounds?' do
+    it 'returns false when called with 1, 1' do
+      expect(game.out_of_bounds?([1, 1])).to be(false)
+    end
+
+    it 'returns true when called with 7, 7' do
+      expect(game.out_of_bounds?([7, 7])).to be(true)
+    end
+  end
+
+  describe 'occupied?' do
+    before do
+      allow(game).to receive(:gets).and_return('1, 1')
+      game.place_color
+    end
+
+    it 'returns true if the chosen space is already occupied' do
+      expect(game.occupied?([0, 0])).to be(true)
+    end
+
+    it 'returns false if the chosen space is not occupied' do
+      expect(game.occupied?([0, 1])).to be(false)
+    end
+  end
+
+  describe 'no_foundation?' do
+    before do
+      allow(game).to receive(:gets).and_return('1, 1')
+      game.place_color
+    end
+
+    it 'returns true if the space below the selected one is not occupied' do
+      expect(game.no_foundation?([2, 6])).to be(true)
+    end
+
+    it 'returns false if the space below the selected one is occupied' do
+      expect(game.no_foundation?([0, 2])).to be(false)
     end
   end
 end
