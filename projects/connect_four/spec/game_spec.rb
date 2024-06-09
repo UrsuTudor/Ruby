@@ -4,36 +4,32 @@ describe Game do
   subject(:game) { described_class.new }
 
   describe 'place_color' do
-    context 'when use input is (1, 1)' do
+    context 'when user input is (1, 1)' do
       it 'changes the first element of the first row' do
         board = game.instance_variable_get(:@board)
-        expect(game).to receive(:gets).and_return('1, 1')
-        game.place_color
-        expect(board[0][0]).to be_instance_of(Space)
+        game.place_color([0, 0])
+        expect(board[0][0]).to eq('r')
       end
 
       it 'changes the first element of the first row to a #Space belonging to red if the round is 0' do
         board = game.instance_variable_get(:@board)
         game.round = 0
-        expect(game).to receive(:gets).and_return('1, 1')
-        game.place_color
-        expect(board[0][0].instance_variable_get(:@player)).to eq('r')
+        game.place_color([0, 0])
+        expect(board[0][0]).to eq('r')
       end
 
       it 'changes the first element of the first row to a #Space belonging to red if the round is even' do
         board = game.instance_variable_get(:@board)
         game.round = 2
-        expect(game).to receive(:gets).and_return('1, 1')
-        game.place_color
-        expect(board[0][0].instance_variable_get(:@player)).to eq('r')
+        game.place_color([0, 0])
+        expect(board[0][0]).to eq('r')
       end
 
       it 'changes the first element of the first row to a #Space belonging to yellow if the round is odd' do
         board = game.instance_variable_get(:@board)
         game.round = 3
-        expect(game).to receive(:gets).and_return('1, 1')
-        game.place_color
-        expect(board[0][0].instance_variable_get(:@player)).to eq('y')
+        game.place_color([0, 0])
+        expect(board[0][0]).to eq('y')
       end
     end
   end
@@ -50,8 +46,7 @@ describe Game do
 
   describe 'occupied?' do
     before do
-      allow(game).to receive(:gets).and_return('1, 1')
-      game.place_color
+      game.place_color([0, 0])
     end
 
     it 'returns true if the chosen space is already occupied' do
@@ -65,8 +60,7 @@ describe Game do
 
   describe 'no_foundation?' do
     before do
-      allow(game).to receive(:gets).and_return('1, 1')
-      game.place_color
+      game.place_color([0, 0])
     end
 
     it 'returns true if the space below the selected one is not occupied' do
@@ -80,19 +74,20 @@ describe Game do
 
   describe 'row_win?' do
     before do
-      allow(game).to receive(:gets).and_return('1, 1')
-      game.place_color
-      allow(game).to receive(:gets).and_return('1, 2')
-      game.place_color
-      allow(game).to receive(:gets).and_return('1, 3')
-      game.place_color
-      allow(game).to receive(:gets).and_return('1, 4')
-      game.place_color
+      game.place_color([0, 0])
+      game.place_color([0, 1])
+      game.place_color([0, 2])
+      game.place_color([0, 3])
     end
 
     it 'returns true if there are 4 elements of the same type coming one after another in a row' do
-      space = [1, 5]
+      space = [0, 3]
       expect(game.row_win?(space)).to be(true)
+    end
+
+    it 'returns false if there are not 4 elements of the same type coming one after another in a row' do
+      space = [0, 4]
+      expect(game.row_win?(space)).to be(false)
     end
   end
 end

@@ -17,12 +17,24 @@ class Game
 
       place_color(space)
       display_board
-      row_win?(space)
+      return puts 'You won!' if row_win?(space)
+
       self.round += 1
     end
   end
 
   def row_win?(space)
+    if space[1] >= 3
+      backwards = board[space[0]][space[1] - 3..space[1]]
+      return true if backwards.uniq.size <= 1
+    end
+
+    if space[1] <= 3
+      forwards = board[space[0]][space[1]..space[1] + 3]
+      return true if forwards.uniq.size <= 1
+    end
+
+    false
   end
 
   def display_board
@@ -31,7 +43,7 @@ class Game
         if column.nil?
           print "  #{column}  |"
         else
-          print "  #{column.player} |"
+          print "  #{column} |"
         end
       end
       puts "\n ----------------------------------"
@@ -39,9 +51,9 @@ class Game
   end
 
   def place_color(space)
-    return board[space[0]][space[1]] = Space.new('r') if round.even? || round.zero?
+    return board[space[0]][space[1]] = 'r' if round.even? || round.zero?
 
-    board[space[0]][space[1]] = Space.new('y') if round.odd?
+    board[space[0]][space[1]] = 'y' if round.odd?
   end
 
   def validate_input
