@@ -3,17 +3,6 @@ require './lib/game'
 describe Game do
   subject(:game) { described_class.new }
 
-  describe 'display_game' do
-    before do
-      allow(game.instance_variable_get(:@board)).to receive(:each)
-    end
-
-    it 'displays the arrays of the game in the console' do
-      expect(game.instance_variable_get(:@board)).to receive(:each).once
-      game.display_board
-    end
-  end
-
   describe 'place_color' do
     context 'when use input is (1, 1)' do
       it 'changes the first element of the first row' do
@@ -86,6 +75,24 @@ describe Game do
 
     it 'returns false if the space below the selected one is occupied' do
       expect(game.no_foundation?([0, 2])).to be(false)
+    end
+  end
+
+  describe 'row_win?' do
+    before do
+      allow(game).to receive(:gets).and_return('1, 1')
+      game.place_color
+      allow(game).to receive(:gets).and_return('1, 2')
+      game.place_color
+      allow(game).to receive(:gets).and_return('1, 3')
+      game.place_color
+      allow(game).to receive(:gets).and_return('1, 4')
+      game.place_color
+    end
+
+    it 'returns true if there are 4 elements of the same type coming one after another in a row' do
+      space = [1, 5]
+      expect(game.row_win?(space)).to be(true)
     end
   end
 end

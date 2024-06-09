@@ -12,10 +12,17 @@ class Game
 
   def play
     10.times do
-      place_color
+      space = validate_input
+      next if space.nil?
+
+      place_color(space)
       display_board
+      row_win?(space)
       self.round += 1
     end
+  end
+
+  def row_win?(space)
   end
 
   def display_board
@@ -31,14 +38,10 @@ class Game
     end
   end
 
-  def place_color
-    loop do
-      space = validate_input
-      next if space.nil?
+  def place_color(space)
+    return board[space[0]][space[1]] = Space.new('r') if round.even? || round.zero?
 
-      return board[space[0]][space[1]] = Space.new('r') if round.even? || round.zero?
-      return board[space[0]][space[1]] = Space.new('y') if round.odd?
-    end
+    board[space[0]][space[1]] = Space.new('y') if round.odd?
   end
 
   def validate_input
