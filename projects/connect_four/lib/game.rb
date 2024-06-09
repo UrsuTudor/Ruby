@@ -10,6 +10,14 @@ class Game
   attr_reader :board
   attr_accessor :round
 
+  def play
+    10.times do
+      place_color
+      display_board
+      self.round += 1
+    end
+  end
+
   def display_board
     board.reverse.each do |row|
       row.each do |column|

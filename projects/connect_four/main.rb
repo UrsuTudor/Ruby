@@ -1,10 +1,7 @@
 require_relative 'lib/game'
 
 game = Game.new
-game.place_color
-game.place_color
-game.place_color
-game.display_board
+game.play
 
 # How do you check if there are 4 connected dots
   # could use a graph where each dot remembers its neighbour
