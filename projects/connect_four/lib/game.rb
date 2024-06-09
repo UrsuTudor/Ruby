@@ -11,7 +11,7 @@ class Game
   attr_accessor :round
 
   def display_board
-    board.each do |row|
+    board.reverse.each do |row|
       row.each do |column|
         if column.nil?
           print "  #{column}  |"
@@ -27,6 +27,7 @@ class Game
     loop do
       space = validate_input
       next if space.nil?
+
       return board[space[0]][space[1]] = Space.new('r') if round.even? || round.zero?
       return board[space[0]][space[1]] = Space.new('y') if round.odd?
     end
