@@ -17,7 +17,7 @@ class Game
 
       place_color(space)
       display_board
-      return puts 'You won!' if row_win?(space)
+      return puts 'You won!' if row_win?(space) || column_win?(space)
 
       self.round += 1
     end
@@ -35,14 +35,18 @@ class Game
     return unless space[1] <= 3
 
     forwards = board[space[0]][space[1]..space[1] + 3]
-    true if forwards.uniq.size <= 1
+    return true if forwards.uniq.size <= 1
+
+    false
   end
 
   def backwards?(space)
     return unless space[1] >= 3
 
     backwards = board[space[0]][space[1] - 3..space[1]]
-    true if backwards.uniq.size <= 1
+    return true if backwards.uniq.size <= 1
+
+    false
   end
 
   def central?(space)
@@ -54,10 +58,25 @@ class Game
     return unless space[1] == 4 || space[1] == 5
 
     section = board[0][3..6]
-    true if section.uniq.size <= 1
+    return true if section.uniq.size <= 1
+
+    false
   end
 
   def column_win?(space)
+    return false if space[0] < 3
+
+    columns = get_column(space)
+    downwards = []
+
+    columns.each { |column| downwards.push(column[space[1]]) }
+    return true if downwards.uniq.size <= 1
+
+    false
+  end
+
+  def get_column(space)
+    [board[space[0]], board[space[0] - 1], board[space[0] - 2], board[space[0] - 3]]
   end
 
   def display_board
