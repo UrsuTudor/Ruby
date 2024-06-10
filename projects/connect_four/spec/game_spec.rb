@@ -112,16 +112,16 @@ describe Game do
 
   describe 'diagonal_win?' do
     before do
-      row = 0
-      column = 0
-      until row == 3
-        until column == 7
-          game.place_color([row, column])
-          column += 1
-        end
-        column = 0
-        row += 1
-      end
+      game.place_color([0, 0])
+      game.place_color([0, 1])
+      game.place_color([0, 2])
+      game.place_color([0, 3])
+      game.place_color([1, 1])
+      game.place_color([1, 2])
+      game.place_color([1, 3])
+      game.place_color([2, 2])
+      game.place_color([2, 3])
+      game.place_color([3, 3])
     end
 
     it 'returns true if there are 4 elements of the same type in a diagonal' do

@@ -16,7 +16,7 @@ class Game
 
       place_color(space)
       display_board
-      return puts 'You won!' if row_win?(space) || column_win?(space)
+      return puts 'You won!' if row_win?(space) || column_win?(space) || diagonal_win?(space) 
 
       self.round += 1
     end
@@ -65,7 +65,7 @@ class Game
   def column_win?(space)
     return false if space[0] < 3
 
-    columns = get_column(space)
+    columns = get_down_rows(space)
     downwards = []
 
     columns.each { |column| downwards.push(column[space[1]]) }
@@ -74,12 +74,53 @@ class Game
     false
   end
 
-  def get_column(space)
+  def get_down_rows(space)
     [board[space[0]], board[space[0] - 1], board[space[0] - 2], board[space[0] - 3]]
   end
 
   def diagonal_win?(space)
-    
+    return true if left_to_right_diagonal?(space)
+    return true if right_to_left_diagonal?(space)
+
+    false
+  end
+
+  def left_to_right_diagonal?(space)
+    diagonal = []
+    row = space[0]
+    column = space[1]
+
+    until board[row][column].nil?
+      row -= 1
+      column -= 1
+    end
+
+    until board[row].nil?
+      diagonal.push(board[row][column]) unless row.negative?
+      row += 1
+      column += 1
+    end
+
+    diagonal.each_cons(4).any? { |cons| cons.all? { |e| e == board[space[0]][space[1]] } }
+  end
+
+  def right_to_left_diagonal?(space)
+    diagonal = []
+    row = space[0]
+    column = space[1]
+
+    until board[row][column].nil?
+      row -= 1
+      column += 1
+    end
+
+    until board[row].nil?
+      diagonal.push(board[row][column]) unless row.negative?
+      row += 1
+      column -= 1
+    end
+
+    diagonal.each_cons(4).any? { |cons| cons.all? { |e| e == board[space[0]][space[1]]}}
   end
 
   def display_board
