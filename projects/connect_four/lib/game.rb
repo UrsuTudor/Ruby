@@ -1,4 +1,3 @@
-require_relative 'space'
 require 'pry-byebug'
 
 class Game
@@ -140,3 +139,7 @@ class Game
     true
   end
 end
+
+# next step is checking diagonals and ties...then you win.
+
+#also don't forget to delete space class
