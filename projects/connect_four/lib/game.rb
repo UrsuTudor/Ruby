@@ -10,7 +10,7 @@ class Game
   attr_accessor :round
 
   def play
-    10.times do
+    loop do
       space = validate_input
       next if space.nil?
 
@@ -78,17 +78,29 @@ class Game
     [board[space[0]], board[space[0] - 1], board[space[0] - 2], board[space[0] - 3]]
   end
 
+  def diagonal_win?(space)
+    
+  end
+
   def display_board
+    puts "\n"
+
+    col_numeration = 6
+
     board.reverse.each do |row|
+      print "#{col_numeration}. |"
       row.each do |column|
         if column.nil?
-          print "  #{column}  |"
+          print "  #{column}   |"
         else
-          print "  #{column} |"
+          print "  #{column}  |"
         end
       end
-      puts "\n ----------------------------------"
+      puts "\n   -------------------------------------------"
+      col_numeration -= 1
     end
+
+    puts '      1.    2.    3.    4.    5.    6.    7.'
   end
 
   def place_color(space)
@@ -141,5 +153,3 @@ class Game
 end
 
 # next step is checking diagonals and ties...then you win.
-
-#also don't forget to delete space class

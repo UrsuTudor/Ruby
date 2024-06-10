@@ -109,4 +109,29 @@ describe Game do
       expect(game.column_win?(space)).to be(false)
     end
   end
+
+  describe 'diagonal_win?' do
+    before do
+      row = 0
+      column = 0
+      until row == 3
+        until column == 7
+          game.place_color([row, column])
+          column += 1
+        end
+        column = 0
+        row += 1
+      end
+    end
+
+    it 'returns true if there are 4 elements of the same type in a diagonal' do
+      space = [3, 3]
+      expect(game.diagonal_win?(space)).to be(true)
+    end
+
+    it 'returns false if there are not 4 elements of the same type in a diagonal' do
+      space = [5, 5]
+      expect(game.diagonal_win?(space)).to be(false)
+    end
+  end
 end
