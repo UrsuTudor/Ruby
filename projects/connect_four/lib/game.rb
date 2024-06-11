@@ -16,7 +16,11 @@ class Game
 
       place_color(space)
       display_board
-      return puts 'You won!' if row_win?(space) || column_win?(space) || diagonal_win?(space)
+
+      return puts 'You won!' if row_win?(space) ||
+                                column_win?(space) ||
+                                diagonal_win?(space)
+
       return puts "It's a tie!" if tie?
 
       self.round += 1
@@ -53,6 +57,8 @@ class Game
     row = space[0]
     column = space[1]
 
+    # this makes sure we get to the lower left corner that isn't out of bounds and that corresponds to the diagonal of
+    # space
     until board[row][column].nil?
       row -= 1
       column -= 1
