@@ -23,43 +23,9 @@ class Game
   end
 
   def row_win?(space)
-    return true if forwards?(space)
-    return true if backwards?(space)
-    return true if central?(space)
+    row = board[space[0]]
 
-    false
-  end
-
-  def forwards?(space)
-    return unless space[1] <= 3
-
-    forwards = board[space[0]][space[1]..space[1] + 3]
-    return true if forwards.uniq.size <= 1
-
-    false
-  end
-
-  def backwards?(space)
-    return unless space[1] >= 3
-
-    backwards = board[space[0]][space[1] - 3..space[1]]
-    return true if backwards.uniq.size <= 1
-
-    false
-  end
-
-  def central?(space)
-    if space[1] == 1 || space[1] == 2
-      section = board[0][0..3]
-      return true if section.uniq.size <= 1
-    end
-
-    return unless space[1] == 4 || space[1] == 5
-
-    section = board[0][3..6]
-    return true if section.uniq.size <= 1
-
-    false
+    row.each_cons(4).any? { |cons| cons.all? { |e| e == board[space[0]][space[1]] } }
   end
 
   def column_win?(space)
@@ -193,4 +159,5 @@ class Game
   end
 end
 
-# next step is checking diagonals and ties...then you win.
+# refactor your methods to use array.each_cons(4)
+# check ties
