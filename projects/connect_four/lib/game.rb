@@ -16,7 +16,8 @@ class Game
 
       place_color(space)
       display_board
-      return puts 'You won!' if row_win?(space) || column_win?(space) || diagonal_win?(space) 
+      return puts 'You won!' if row_win?(space) || column_win?(space) || diagonal_win?(space)
+      return puts "It's a tie!" if tie?
 
       self.round += 1
     end
@@ -29,15 +30,11 @@ class Game
   end
 
   def column_win?(space)
-    return false if space[0] < 3
-
     columns = get_down_rows(space)
     downwards = []
 
     columns.each { |column| downwards.push(column[space[1]]) }
-    return true if downwards.uniq.size <= 1
-
-    false
+    downwards.uniq.size <= 1
   end
 
   def get_down_rows(space)
@@ -89,6 +86,11 @@ class Game
     diagonal.each_cons(4).any? { |cons| cons.all? { |e| e == board[space[0]][space[1]]}}
   end
 
+  def tie?
+    last_row = board[5]
+    last_row.none?(&:nil?)
+  end
+
   def display_board
     puts "\n"
 
@@ -121,6 +123,8 @@ class Game
 
     space = gets.chomp.split(',').map { |num| num.to_i - 1 }
 
+    return if missing_input?(space)
+
     return if out_of_bounds?(space)
 
     return if occupied?(space)
@@ -128,6 +132,15 @@ class Game
     return if no_foundation?(space)
 
     space
+  end
+
+  def missing_input?(input)
+    if input.nil? || input[1].nil?
+      puts 'Cannot have empty values.'
+      return true
+    end
+
+    false
   end
 
   def out_of_bounds?(input)
@@ -158,6 +171,3 @@ class Game
     true
   end
 end
-
-# refactor your methods to use array.each_cons(4)
-# check ties

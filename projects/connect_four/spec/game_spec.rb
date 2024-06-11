@@ -58,6 +58,17 @@ describe Game do
     end
   end
 
+  describe 'missing_input?' do
+    it 'returns true if input or part of input is nil' do
+      expect(game.missing_input?(nil)).to be(true)
+      expect(game.missing_input?([0, nil])).to be(true)
+    end
+
+    it 'returns false if no part of input is nil' do
+      expect(game.missing_input?([0, 1])).to be(false)
+    end
+  end
+
   describe 'no_foundation?' do
     before do
       game.place_color([0, 0])
@@ -132,6 +143,36 @@ describe Game do
     it 'returns false if there are not 4 elements of the same type in a diagonal' do
       space = [5, 5]
       expect(game.diagonal_win?(space)).to be(false)
+    end
+  end
+
+  describe 'tie?' do
+    before do
+      row = 0
+      column = 0
+      until row == 6
+        column = 0
+        until column == 6
+          game.place_color([row, column])
+          column += 1
+        end
+        row += 1
+      end
+    end
+
+    it 'returns true if all spaces are occupied' do
+      game.place_color([0, 6])
+      game.place_color([1, 6])
+      game.place_color([2, 6])
+      game.place_color([3, 6])
+      game.place_color([4, 6])
+      game.place_color([5, 6])
+
+      expect(game.tie?).to be(true)
+    end
+
+    it 'returns false if there is at least one empty space left' do
+      expect(game.tie?).to be(false)
     end
   end
 end
